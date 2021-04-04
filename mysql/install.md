@@ -1,5 +1,5 @@
-安装
-====
+MySQL 8.0安装
+=============
 
 yum install libaio -y
 

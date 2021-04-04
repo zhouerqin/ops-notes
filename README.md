@@ -4,5 +4,5 @@
 [MySQL](mysql/install.md)
 ------------------------
 
-[Systemd](notes/systemd.md)
+[Systemd](systemd/systemd.md)
 --------------------------
