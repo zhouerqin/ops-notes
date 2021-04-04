@@ -1,17 +1,22 @@
-MySQL 8.0安装
-=============
+CentOS系统下使用通用二进制安装包安装MySQL 8.0
+=========================================
 
-yum install libaio -y
+[下载mysql](https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-8.0.23-linux-glibc2.17-x86_64-minimal.tar)
+
+- 如果系统已经安装mysql,请先卸载mysql,并移除/etc/my.cnf或者/etc/mysql,/etc/profile.d/mysql
+- CentOS7系统下需要安装libaio依赖`yum install libaio -y`
+
 
 初始化
 ------
 
-    mysqld --initialize --user=mysql --basedir=/opt/mysql --datadir=/opt/mysql/data
+    mysqld --no-defaults --initialize --user=mysql --basedir=/opt/mysql --datadir=/opt/mysql/data
     or 
     mysqld -I --user=mysql --basedir=/opt/mysql --datadir=/opt/mysql/data
     cp my.cnf /etc/my.cnf #拷贝my.cnf配置文件,可以参考版本库里面的模板
     cp support-files/mysql.server /etc/init.d/mysql
     chkconfig --add mysql
+    
     service mysql start
 
 修改环境变量
@@ -19,6 +24,10 @@ yum install libaio -y
 
 设置日志轮转
 -----------
+
+复制[mysql.logrotate](mysql.logrotate)
+
+    cp mysql.logrotate /etc/logrotate.d/mysql
 
 修改默认密码
 -----------

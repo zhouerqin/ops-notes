@@ -1,0 +1,23 @@
+/opt/mysql/data/mysql-error.err
+/opt/mysql/data/mysql-slow.err
+/opt/mysql/data/mysql-gen.log
+{
+    notifempty
+    weekly
+    # rotate 5
+    maxage 14
+    missingok
+    compress
+    dateext
+    dateformat -%Y%m%d
+    sharedscripts
+    postrotate
+        # just if mysqld is really running
+        if test -x /opt/mysql/bin/mysqladmin && \
+           /opt/mysql/bin/mysqladmin ping &>/dev/null
+        then
+           /opt/mysql/bin/mysqladmin flush-logs
+        fi
+    endscript
+}
+
