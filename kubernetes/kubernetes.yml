@@ -1,0 +1,69 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: add kubernetes aliyun mirror
+      yum_repository:
+        name: kubernetes
+        description: Kubernetes
+        baseurl: https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/
+        enabled: yes
+        gpgcheck: yes
+        repo_gpgcheck: yes
+        gpgkey: 
+          - https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg 
+          - https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
+      notify: yum-clean-metadata
+
+    - name: disable SELinux
+      selinux:
+        state: disabled
+
+    - name: disable and stop firewalld service
+      service:
+        name: firewalld
+        enabled: no
+        state: stopped
+
+    - name: Add the br_netfilter module
+      modprobe:
+        name: br_netfilter
+        state: present
+
+    - name: update sysctl for k8s
+      sysctl:
+        name: "{{ item }}"
+        value: 1
+        state: present
+      with_items:
+        - net.bridge.bridge-nf-call-ip6tables
+        - net.bridge.bridge-nf-call-iptables
+
+    - name: Remove swapfile from /etc/fstab
+      mount:
+        path: none
+        fstype: swap
+        state: absent
+
+    - name: disable swap
+      command: swapoff -a
+      args:
+        warn: no
+      when: ansible_swaptotal_mb > 0
+
+    - name: install kubernetes
+      command: yum install -y kubelet-1.20.5 kubeadm-1.20.5 kubectl-1.20.5
+      args:
+        warn: no
+
+    - name: enable and start kubelet service
+      service:
+        name: kubelet
+        enabled: yes
+        state: started
+
+  handlers:
+    - name: yum-clean-metadata
+      command: yum clean metadata
+      # args:
+      #   warn: no
