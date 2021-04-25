@@ -1,0 +1,26 @@
+- hosts: all
+  become: yes
+  tasks:
+  - name: 添加elasticsearch镜像源
+    copy: 
+      src: elasticsearch.repo
+      dest: /etc/yum.repos.d/elasticsearch.repo
+    notify: yum-clean-metadata
+
+  - name: 安装elasticsearch
+    yum:
+      name: elasticsearch
+      enablerepo: elasticsearch
+      state: installed
+
+  - name: 设置开机启动项，并启动elasticsearch
+    service:
+      name: elasticsearch
+      state: started
+      enabled: yes
+    
+  handlers:
+  - name: yum-clean-metadata
+    command: yum clean metadata
+    args:
+      warn: no

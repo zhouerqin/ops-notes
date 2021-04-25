@@ -1,0 +1,25 @@
+- hosts: all
+  become: yes
+  tasks:
+  - name: 添加kibana软件源
+    copy: 
+      src: kibana.repo
+      dest: /etc/yum.repos.d/kibana.repo
+    notify: yum-clean-metadata
+
+  - name: 安装kibana
+    yum:
+      name: kibana
+      state: installed
+
+  - name: 设置开机启动项，并启动kibana
+    service:
+      name: kibana
+      state: started
+      enabled: yes
+    
+  handlers:
+  - name: yum-clean-metadata
+    command: yum clean metadata
+    args:
+      warn: no

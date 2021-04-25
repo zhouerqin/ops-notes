@@ -1,0 +1,25 @@
+- hosts: all
+  become: yes
+  tasks:
+  - name: 添加logstash软件源
+    copy: 
+      src: logstash.repo
+      dest: /etc/yum.repos.d/logstash.repo
+    notify: yum-clean-metadata
+
+  - name: 安装logstash
+    yum:
+      name: logstash
+      state: installed
+
+  - name: 设置开机启动项，并启动logstash
+    service:
+      name: logstash
+      state: started
+      enabled: yes
+    
+  handlers:
+  - name: yum-clean-metadata
+    command: yum clean metadata
+    args:
+      warn: no
