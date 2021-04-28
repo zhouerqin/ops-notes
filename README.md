@@ -7,5 +7,8 @@
 [MySQL](mysql/install.md)
 ------------------------
 
+[Kubernetes](kubernetes/README.md)
+---------------------------------
+
 [Systemd](systemd/systemd.md)
 --------------------------
