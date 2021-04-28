@@ -7,7 +7,7 @@ CentOS系统下使用通用二进制安装包安装MySQL 8.0
 
 
 初始化
-------
+
     cd /opt/
     wget -q https://repo.huaweicloud.com/mysql/Downloads/MySQL-8.0/mysql-8.0.23-linux-glibc2.17-x86_64-minimal.tar.xz
     tar -xf mysql-8.0.23-linux-glibc2.17-x86_64-minimal.tar.xz
@@ -21,25 +21,21 @@ CentOS系统下使用通用二进制安装包安装MySQL 8.0
     service mysql start
 
 修改环境变量
------------
 
     cp mysql.profile /etc/profile.d/mysql.sh
 
 设置日志轮转
------------
 
     cp mysql.logrotate /etc/logrotate.d/mysql
 
 修改默认密码
------------
 
     set password="123456";
 
 主从配置
-========
+-------------
 
 主库导出数据
--------------
 
     mysqldump --master-data=2 --single-transaction --set-gtid-purged=off --log-error=all.log -A >all.sql
     # 创建复制的用户
@@ -47,7 +43,6 @@ CentOS系统下使用通用二进制安装包安装MySQL 8.0
     GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%';
 
 从库执行
---------
 
     # 导入数据库
     mysql < all.sql
