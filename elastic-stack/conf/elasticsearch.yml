@@ -1,0 +1,6 @@
+node.name: node-1
+path.data: /var/lib/elasticsearch
+path.logs: /var/log/elasticsearch
+network.host: 192.168.50.102
+http.port: 9200
+cluster.initial_master_nodes: ["node-1"]

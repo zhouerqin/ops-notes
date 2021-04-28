@@ -11,15 +11,26 @@
     yum:
       name: kibana
       state: installed
+    notify: enable-kibana-service
 
-  - name: 设置开机启动项，并启动kibana
-    service:
-      name: kibana
-      state: started
-      enabled: yes
+  - name: 配置kibana
+    copy: 
+      src: conf/kibana.yml
+      dest: /etc/kibana/kibana.yml
+    notify: restart-kibana-service
     
   handlers:
   - name: yum-clean-metadata
     command: yum clean metadata
     args:
       warn: no
+
+  - name: enable-kibana-service
+    service:
+      name: kibana
+      enabled: yes
+
+  - name: restart-kibana-service
+    service:
+      name: kibana
+      state: restarted
