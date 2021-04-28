@@ -1,4 +1,6 @@
-# INSTALL
+初始化
+================
+
   kubeadm init --kubernetes-version=v1.20.5 --pod-network-cidr="10.244.0.0/16" --image-repository registry.aliyuncs.com/google_containers --apiserver-advertise-address=192.168.50.11 
   kubectl apply -f /vagrant/kube-flannel.yml
   
@@ -11,5 +13,10 @@
 
 
 kubectl logs -f deployment/mongo
+
+待完善
+-------------
+1. docker 日志警告处理
+2. docker 国内镜像加速
 
 
