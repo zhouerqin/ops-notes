@@ -1,0 +1,65 @@
+---
+# tasks file for redis
+- name: 创建目录结构
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - /data/app
+    - /data/src
+
+- name: 安装依赖
+  yum:
+    name: systemd-devel
+    state: present
+
+- name: 解压源码包
+  unarchive:
+    src: "{{ redis_package_filename }}"
+    dest: "{{ source_base_dir }}"
+
+- name: 添加用户
+  user:
+    name: "{{ redis_user }}"
+
+- name: 编译安装
+  command:
+    cmd: "{{ item }}"
+    chdir: "{{ redis_source_dir }}"
+  with_items:
+    - "make USE_SYSTEMD=yes"
+    - "make install PREFIX={{ redis_install_dir }}"
+
+- name: 生成目录结构
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ redis_user }}"
+    group: "{{ redis_user }}"
+    mode: "0755"
+  with_items:
+    - "{{ redis_install_dir }}/data/"
+    - "{{ redis_install_dir }}/etc/"
+    - "{{ redis_install_dir }}/run/"
+
+- name: 生成配置文件
+  template:
+    src: redis.conf.j2
+    dest: "{{ redis_install_dir }}/etc/redis.conf"
+
+- name: 生成自启动文件
+  template:
+    src: redis.service.j2
+    dest: "/usr/lib/systemd/system/redis.service"
+
+- name: 添加环境变量配置文件
+  template:
+    src: redis.sh.j2
+    dest: "/etc/profile.d/redis.sh"
+
+- name: 设置开机启动 & 重启  
+  systemd:
+    name: redis
+    state: restarted
+    daemon_reload: yes
+    enabled: yes
