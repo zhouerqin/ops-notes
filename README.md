@@ -7,6 +7,7 @@
 vagrant 使用的自定义的centos7 box ,可以使用官方 centos/7 box 代替
 
 1. [MySQL](mysql/README.md)
+1. [Redis](redis/README.md)
 1. [Kubernetes](kubernetes/README.md)
 1. [ELK](elastic-stack/README.md)
 1. [Systemd](systemd/systemd.md)
