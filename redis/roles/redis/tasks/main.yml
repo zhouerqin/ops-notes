@@ -51,17 +51,22 @@
     owner: "{{ redis_user }}"
     group: "{{ redis_user }}"
 
-- name: 生成redis-sentinel配置文件
-  template:
-    src: redis-sentinel.conf.j2
-    dest: "{{ redis_home }}/etc/redis-sentinel.conf"
-    owner: "{{ redis_user }}"
-    group: "{{ redis_user }}"
-
 - name: 生成自启动文件
   template:
     src: redis.service.j2
     dest: "/usr/lib/systemd/system/redis.service"
+
+- name: 生成redis-sentinel配置文件
+  template:
+    src: sentinel.conf.j2
+    dest: "{{ redis_home }}/etc/sentinel.conf"
+    owner: "{{ redis_user }}"
+    group: "{{ redis_user }}"
+
+- name: 生成redis-sentinel自启动文件
+  template:
+    src: redis-sentinel.service.j2
+    dest: "/usr/lib/systemd/system/redis-sentinel.service"
 
 - name: 添加环境变量配置文件
   template:
@@ -69,12 +74,13 @@
     dest: "/etc/profile.d/redis.sh"
 
 - name: 内核参数优化
-  - sysctl:
+  sysctl:
     name: net.core.somaxconn
-    value: 1024
-  - sysctl:
+    value: "1024"
+
+- sysctl:
     name: vm.overcommit_memory
-    value: 1
+    value: "1"
 
 - name: 设置开机启动 & 重启  
   systemd:

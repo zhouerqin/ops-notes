@@ -7,7 +7,7 @@ Wants=network-online.target
 [Service]
 ExecStart={{ redis_home }}/bin/redis-sentinel {{ redis_home }}/etc/sentinel.conf
 ExecStop={{ redis_home }}/bin/redis-cli -p 26379 shutdown
-Type=notify
+Type=forking
 User={{redis_user}}
 Group={{redis_user}}
 RuntimeDirectory={{redis_user}}
