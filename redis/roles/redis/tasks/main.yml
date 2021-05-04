@@ -53,8 +53,8 @@
 
 - name: 生成redis-sentinel配置文件
   template:
-    src: sentinel.conf.j2
-    dest: "{{ redis_home }}/etc/sentinel.conf"
+    src: redis-sentinel.conf.j2
+    dest: "{{ redis_home }}/etc/redis-sentinel.conf"
     owner: "{{ redis_user }}"
     group: "{{ redis_user }}"
 
