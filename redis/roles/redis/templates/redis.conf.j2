@@ -7,7 +7,7 @@ timeout 0
 tcp-keepalive 300
 daemonize yes
 supervised systemd
-pidfile /data/app/redis/run/redis_6379.pid
+pidfile {{ redis_home }}/run/redis_6379.pid
 loglevel notice
 logfile ""
 databases 16
@@ -19,7 +19,7 @@ stop-writes-on-bgsave-error yes
 rdbcompression yes
 rdbchecksum yes
 dbfilename dump.rdb
-dir /data/app/redis/data/
+dir {{ redis_home }}/data/
 replica-serve-stale-data yes
 replica-read-only yes
 repl-diskless-sync no

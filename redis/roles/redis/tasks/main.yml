@@ -28,7 +28,7 @@
     chdir: "{{ redis_source_dir }}"
   with_items:
     - "make USE_SYSTEMD=yes"
-    - "make install PREFIX={{ redis_install_dir }}"
+    - "make install PREFIX={{ redis_home }}"
 
 - name: 生成目录结构
   file:
@@ -38,14 +38,25 @@
     group: "{{ redis_user }}"
     mode: "0755"
   with_items:
-    - "{{ redis_install_dir }}/data/"
-    - "{{ redis_install_dir }}/etc/"
-    - "{{ redis_install_dir }}/run/"
+    - "{{ redis_home }}/data/"
+    - "{{ redis_home }}/sentinel_data/"
+    - "{{ redis_home }}/etc/"
+    - "{{ redis_home }}/run/"
+    - "{{ redis_home }}/log/"
 
-- name: 生成配置文件
+- name: 生成redis-server配置文件
   template:
     src: redis.conf.j2
-    dest: "{{ redis_install_dir }}/etc/redis.conf"
+    dest: "{{ redis_home }}/etc/redis.conf"
+    owner: "{{ redis_user }}"
+    group: "{{ redis_user }}"
+
+- name: 生成redis-sentinel配置文件
+  template:
+    src: sentinel.conf.j2
+    dest: "{{ redis_home }}/etc/sentinel.conf"
+    owner: "{{ redis_user }}"
+    group: "{{ redis_user }}"
 
 - name: 生成自启动文件
   template:
@@ -56,6 +67,14 @@
   template:
     src: redis.sh.j2
     dest: "/etc/profile.d/redis.sh"
+
+- name: 内核参数优化
+  - sysctl:
+    name: net.core.somaxconn
+    value: 1024
+  - sysctl:
+    name: vm.overcommit_memory
+    value: 1
 
 - name: 设置开机启动 & 重启  
   systemd:
