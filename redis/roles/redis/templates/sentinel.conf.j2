@@ -4,7 +4,7 @@ protected-mode no
 pidfile "{{ redis_home }}/run/redis-sentinel.pid"
 logfile "{{ redis_home }}/log/redis-sentinel.log"
 dir "{{ redis_home }}/sentinel_data"
-sentinel monitor node01 192.168.50.103 6379 1
+sentinel monitor node01 192.168.50.103 6379 2
 sentinel down-after-milliseconds node01 60000
 sentinel failover-timeout node01 180000
 sentinel parallel-syncs node01 1
