@@ -14,12 +14,22 @@
       command: "{{ item }}"
       with_items:
         - yum makecache fast
-        - yum -y install docker-ce
+        - yum -y install docker-ce-19.03.15
       args:
         warn: no
+
+    - name: 创建文件夹
+      file:
+        path: /etc/docker
+        state: directory
     
-    - name: Step 4 enable and start docker service
+    - name: step 4 docker 国内镜像加速
+      template:
+        src: daemon.json
+        dest: /etc/docker/daemon.json
+    
+    - name: Step 5 enable and start docker service
       service:
         name: docker
-        state: started
+        state: restarted
         enabled: yes

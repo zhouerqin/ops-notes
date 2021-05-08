@@ -11,6 +11,7 @@
 
 修改 k8s集群宿主机hosts 文件
 
+kubeadm token create --print-join-command
 
 kubectl logs -f deployment/mongo
 
