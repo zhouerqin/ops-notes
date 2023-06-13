@@ -38,8 +38,9 @@ lvscan
 
 调整lv大小
 
-lvextend -L +30G -f -r /dev/centos/home1
-lvextend -l +100%FREE /dev/centos/home1
+lvextend -L +30G -f -r /dev/centos/home
+
+lvextend -l +100%FREE /dev/centos/home
 
 
 
