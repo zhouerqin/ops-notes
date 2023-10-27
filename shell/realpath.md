@@ -1,10 +1,12 @@
 # realpath
-参数
-```
--e, --canonicalize-existing 必须存在路径
 
--m, --canonicalize-missing  不需要存在路径
-```
+* 必须存在路径
+
+`-e, --canonicalize-existing `
+
+* 不需要存在路径
+
+` -m, --canonicalize-missing `
 
 ## 简单用法
 
