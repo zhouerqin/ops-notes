@@ -27,41 +27,41 @@ VG-->LV1
 VG-->LV2
 ```
 
-创建pv
+* 创建pv
 
-pvcreate /dev/sdc2
+`pvcreate /dev/sdc2`
 
-查看pv
+* 查看pv
 
-pvscan
+`pvscan`
 
-查看vg
+* 查看vg
 
-vgscan
+`vgscan`
 
-vgdisplay
+`vgdisplay`
 
-创建vg
+* 创建vg
 
-vgcreate centos /dev/sdc1
+`vgcreate centos /dev/sdc1`
 
-vg扩容
+* vg扩容
 
-vgextend centos /dev/sdc2
+`vgextend centos /dev/sdc2`
 
-查看 lv
+* 查看 lv
 
-lvscan
+`lvscan`
 
-调整lv大小
+* 调整lv大小
 
-lvextend -L +30G -f -r /dev/centos/home
+`lvextend -L +30G -f -r /dev/centos/home`
 
-lvextend -l +100%FREE /dev/centos/home
+`lvextend -l +100%FREE /dev/centos/home`
 
-resize2fs /dev/centos/home
+`resize2fs /dev/centos/home`
 
-例子
+> 扩容例子
 ```bash
 # 使用fdisk/gdisk命令添加分区
 gdisk /dev/vdb
@@ -73,4 +73,14 @@ vgextend centos /dev/vdb2
 # 调整lv大小
 lvextend -l +100%FREE /dev/centos/home
 resize2fs /dev/centos/home
+```
+
+> 缩容例子
+```bash
+umount /home
+resize2fs /dev/centos/home {分区大小}
+lvreduce -L {分区大小} /dev/centos/home
+: or
+lvreduce -l -100G /dev/centos/home
+resize2fs /dev/centos/home {分区大小}
 ```
