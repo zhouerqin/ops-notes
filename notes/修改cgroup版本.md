@@ -1,4 +1,14 @@
-# 修改cgroup版本
+## 查看cgroup版本
+
+要检查你的发行版使用的是哪个 cgroup 版本，请在该节点上运行 stat -fc %T /sys/fs/cgroup/ 命令：
+
+`stat -fc %T /sys/fs/cgroup/`
+
+对于 cgroup v2，输出为 cgroup2fs。
+
+对于 cgroup v1，输出为 tmpfs。
+
+## 修改cgroup版本
 
 Ubuntu22.04系统 Cgroup v2 切换成v1
 
