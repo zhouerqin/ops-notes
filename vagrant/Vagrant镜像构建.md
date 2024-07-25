@@ -15,6 +15,9 @@
 
 6. usermod -aG vboxsf vagrant
  
+7. SSH调整
+为了保持 SSH 快速，即使您的计算机或 Vagrant 机器也是如此 未连接到互联网，请在 SSH 服务器配置中将配置设置为。UseDNSno
+这避免了在连接的 SSH 客户端上进行反向 DNS 查找，该客户端 可能需要几秒钟。
 
 ## 打包镜像
 
