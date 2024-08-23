@@ -1,12 +1,16 @@
 #!/bin/bash
 set -e
 
+
 function add_profile(){
     cat > /etc/profile.d/git.sh <<EOF
 export PATH="/usr/local/git/bin:\$PATH"
 EOF
 }
 
+# git代理服务配置参考
+# https://bannirui.github.io/2024/01/24/%E4%BB%A3%E7%90%86git%E7%9A%84ssh%E5%8D%8F%E8%AE%AE/
+#
 function git_init_config(){
     git config --global user.email "zhouerqin@qq.com"
     git config --global user.name "zhouerqin"
