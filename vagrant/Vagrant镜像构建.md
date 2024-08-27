@@ -13,7 +13,13 @@
 5. vagrant添加sudo权限
 `echo vagrant ALL=(ALL) NOPASSWD:ALL>/etc/sudoer`
 
-6. usermod -aG vboxsf vagrant
+6. 安装vboxguest
+
+yum install make gcc
+
+yum install bzip2 kernel kernel-headers kernel-devel
+
+usermod -aG vboxsf vagrant
  
 7. SSH调整
 为了保持 SSH 快速，即使您的计算机或 Vagrant 机器也是如此 未连接到互联网，请在 SSH 服务器配置中将配置设置为。UseDNS=no
