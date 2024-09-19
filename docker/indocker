@@ -21,5 +21,5 @@ docker exec -it $(echo $container_id|cut -c -4) bash
 EOF
 }
 
-default_image="harbor.luban.fit:8384/library/centos:7"
+default_image="centos:7"
 main $@
