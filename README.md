@@ -42,7 +42,7 @@ Ops-Notes 是一个个人运维笔记项目，记录了我在超过10年的运�
 ## 联系方式
  
 - **Email**：zhouerqin@qq.com
-- **GitHub**：[yourusername](https://github.com/zhouerqin)
+- **GitHub**：[zhouerqin](https://github.com/zhouerqin)
  
 ## 致谢
  
