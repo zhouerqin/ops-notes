@@ -15,3 +15,20 @@
 
 `set -C`
 
+- 设置环境变量
+`set -a`
+
+- 打开
+
+example
+
+- 脚本文件常用选项
+
+`set -eux -o pipefail`
+
+- 加载env文件
+```bash
+set -a
+source .env
+set +a
+```
