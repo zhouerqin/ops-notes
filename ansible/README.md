@@ -1,29 +1,26 @@
-# ansible中变量的优先级
-Understanding variable precedence
+# Ansible 变量优先级
 
-Ansible does apply variable precedence, and you might have a use for it. Here is the order of precedence from least to greatest (the last listed variables override all other variables):
+从低到高排序：
+1. 命令行参数 (例如 -u my_user)
+2. role defaults (role/defaults/main.yml)
+3. inventory 文件或脚本中的 group vars
+4. inventory group_vars/all
+5. playbook group_vars/all
+6. inventory group_vars/*
+7. playbook group_vars/*
+8. inventory host vars
+9. inventory host_vars/*
+10. playbook host_vars/*
+11. host facts / cached set_facts
+12. play vars
+13. play vars_prompt
+14. play vars_files
+15. role vars (role/vars/main.yml)
+16. block vars (仅对 block 中的任务有效)
+17. task vars (only for the task)
+18. include_vars
+19. set_facts / registered vars
+20. extra vars (最高优先级)
 
-1. command line values (for example, , these are not variables)-u my_user
-1. role defaults (defined in role/defaults/main.yml) 1
-1. inventory file or script group vars 2
-1. inventory group_vars/all 3
-1. playbook group_vars/all 3
-1. inventory group_vars/* 3
-1. playbook group_vars/* 3
-1. inventory file or script host vars 2
-1. inventory host_vars/* 3
-1. playbook host_vars/* 3
-1. host facts / cached set_facts 4
-1. play vars
-1. play vars_prompt
-1. play vars_files
-1. role vars (defined in role/vars/main.yml)
-1. block vars (only for tasks in block)
-1. task vars (only for the task)
-1. include_vars
-1. set_facts / registered vars
-1. role (and include_role) params
-1. include params
-1. extra vars (for example, )(always win precedence)-e "user=my_user"
-
-<https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html#id16>
+## 参考文档
+- Ansible 变量优先级：<https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html#id16>

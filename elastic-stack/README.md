@@ -1,13 +1,23 @@
-yum 安装 ELK 环境
-=======================
+# Elastic Stack 配置
 
-  vagrant up
-
+## 设置用户密码
+```bash
+# 交互式设置以下账号的密码：
+# elastic, apm_system, kibana, logstash_system, beats_system, remote_monitoring_user
 elasticsearch-setup-passwords interactive
-这里会设置六个账号的密码：elastic,apm_system,kibana,logstash_system,beats_system,remote_monitoring_user.需要根据提示逐一设置密码。
+```
 
-* elasticsearch-certutil
+## 配置 TLS 证书
+```bash
+# 生成证书
+elasticsearch-certutil cert -out elastic-stack-ca.p12
 
-该命令简化了 与 Elastic Stack 中的传输层安全性 （TLS） 配合使用
+# 生成 CSR
+elasticsearch-certutil csr -out elastic-stack.csr
 
-<https://www.elastic.co/guide/en/elasticsearch/reference/current/certutil.html>
+# 生成 HTTP 证书
+elasticsearch-certutil http
+```
+
+## 参考文档
+- Elasticsearch 证书工具：<https://www.elastic.co/guide/en/elasticsearch/reference/current/certutil.html>

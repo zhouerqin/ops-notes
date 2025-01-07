@@ -1,11 +1,44 @@
-# SHELL脚本编码规范
+# Shell 脚本规范
 
-* SHELL应该仅仅被用于小功能或者简单的包装脚本
+## 基本规范
+1. 只用于小功能或简单包装脚本
+2. 总是检查命令退出码
+3. 使用标准输出传递变量
+4. 保持脚本幂等性
+5. 包含 help 函数
 
-* 函数和命令的执行结果,通过退出码传递,应该总是检查退出码
+## 脚本模板
+```bash
+#!/bin/bash
+set -e
 
-* 使用标准输出传递字符串变量,而不总是使用全局变量
+# 显示帮助信息
+function help() {
+    echo "Usage: $0 [options]"
+    echo "Options:"
+    echo "  -h    显示帮助信息"
+    exit 1
+}
 
-* 脚本应该是幂等的
+# 参数解析
+while getopts "h" opt; do
+    case $opt in
+        h)
+            help
+            ;;
+        \?)
+            help
+            ;;
+    esac
+done
 
-* 每个脚本文件应该有一个help函数,用来打印帮助信息
+# 主要逻辑
+main() {
+    # 检查命令返回值
+    if ! command; then
+        echo "Error: command failed"
+        exit 1
+    fi
+}
+
+main "$@"

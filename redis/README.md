@@ -1,28 +1,49 @@
-REDIS
-=============
+# Redis 安装配置
 
-1. 执行`sh download.sh`下载redis-6.2.2
+## 编译安装
+```bash
+# 下载并解压
+wget https://download.redis.io/releases/redis-6.2.2.tar.gz
+tar xzf redis-6.2.2.tar.gz
+cd redis-6.2.2
 
-安装部骤:
+# 编译安装
+make && make install PREFIX=/usr/local/redis
 
-1. 新建用户
-1. 获取并解压文件
-1. 编译并安装
-1. 添加redis配置文件
-1. 设置安装文件夹权限
-1. 添加systemd redis 服务
-1. 设置redis服务开机自启动
-1. 启动redis
+# 创建用户和目录
+useradd -r -s /sbin/nologin redis
+mkdir -p /usr/local/redis/{etc,logs,data}
+chown -R redis:redis /usr/local/redis
+```
 
-主从模式
--------------
+## 配置 systemd 服务
+```ini
+# /etc/systemd/system/redis.service
+[Unit]
+Description=Redis persistent key-value database
+After=network.target
 
-哨兵模式
--------------
+[Service]
+Type=forking
+User=redis
+Group=redis
+ExecStart=/usr/local/redis/bin/redis-server /usr/local/redis/etc/redis.conf
+ExecStop=/usr/local/redis/bin/redis-cli shutdown
 
-哨兵模式配置文件
+[Install]
+WantedBy=multi-user.target
+```
 
-哨兵模式常用命令
+## 启动服务
+```bash
+systemctl daemon-reload
+systemctl enable redis
+systemctl start redis
+```
+
+## 哨兵模式配置文件
+
+## 哨兵模式常用命令
 
 1. sentinel masters：返回该哨兵监控的所有Master的相关信息。
 1. SENTINEL MASTER <name>：返回指定名称Master的相关信息。
@@ -39,20 +60,15 @@ REDIS
 1. SENTINEL SET <mastername> [<option> <value> ...]：设置指定名称的Master的各类参数（例如超时时间等）。
 1. SENTINEL SIMULATE-FAILURE <flag> <flag> ...<flag>：模拟崩溃。flag可以为crash-after-election或者crash-after-promotion，分别代表切换时选举完成主哨兵之后崩溃以及将被选中的从服务器推举为Master之后崩溃。
 
-哨兵模式主从切换规则
+## 哨兵模式主从切换规则
 
 1. 如果该Slave处于主观下线状态，则不能被选中。
 2. 如果该Slave 5s之内没有有效回复ping命令或者与主服务器断开时间过长，则不能被选中。
 3. 如果slave-priority为0，则不能被选中（slave-priority可以在配置文件中指定。正整数，值越小优先级越高，当指定为0时，不能被选为主服务器）。
 4. 在剩余Slave中比较优先级，优先级高的被选中；如果优先级相同，则有较大复制偏移量的被选中；否则按字母序选择排名靠前的Slave。
 
-集群模式
--------------
-
-内核优化
--------------
-
-参数名称             | 参数值
+## 内核优化
+### 参数名称             | 参数值
 --------             | ------
 net.core.somaxconn   | 系统默认128， 建议1024
 vm.overcommit_memory | 系统默认0，建议设置为1

@@ -1,13 +1,33 @@
-# Docker
+# Docker 日志配置
 
-## Dockerfile
+## 使用 Elastic 日志插件
 
-## log
+```json
+{
+  "log-driver": "elastic",
+  "log-opts": {
+    "elastic-url": "http://localhost:9200",
+    "elastic-index": "docker-%Y.%m.%d",
+    "elastic-type": "_doc",
+    "elastic-timeout": "10s"
+  }
+}
+```
 
-官方nginx镜像的例子 https://github.com/nginxinc/docker-nginx/blob/8921999083def7ba43a06fabd5f80e4406651353/mainline/jessie/Dockerfile#L21-L23
+## 配置默认日志驱动
 
-<https://docs.docker.com/config/containers/logging/>
+在 /etc/docker/daemon.json 中：
+```json
+{
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "3"
+  }
+}
+```
 
-### Elastic Logging Plugin for Docker
-
-<https://www.elastic.co/guide/en/beats/loggingplugin/8.11/log-driver-usage-examples.html>
+## 参考文档
+- Docker 日志配置：<https://docs.docker.com/config/containers/logging/>
+- Elastic 日志插件：<https://www.elastic.co/guide/en/beats/loggingplugin/8.11/log-driver-usage-examples.html>
+- Nginx 官方镜像示例：<https://github.com/nginxinc/docker-nginx/blob/8921999083def7ba43a06fabd5f80e4406651353/mainline/jessie/Dockerfile#L21-L23>

@@ -4,4 +4,3 @@
 
 ```
 <Valve className="org.apache.catalina.valves.ErrorReportValve" showReport="false" showServerInfo="false" />
-```

@@ -1,12 +1,20 @@
-# jq
+# jq 命令
 
-> jq是一个轻量级且灵活的命令行 JSON 处理器
-> 更多信息: <https://jqlang.github.io/jq/manual/>
+## 常用选项
+- `-R, --raw-input`: 不解析 JSON 输入，每行文本作为字符串传递
+- `-r, --raw-output`: 输出原始字符串，不添加 JSON 引号
 
-* --raw-input / -R:
+## 常用示例
+```bash
+# 解析 JSON 并格式化输出
+echo '{"name": "test"}' | jq '.'
 
-不以 JSON 格式解析输入。相反，每行文本都以字符串形式传递给过滤器。
+# 读取普通文本并转为 JSON
+echo 'hello' | jq -R '.'
 
-* --raw-output / -r:
+# 提取字符串值时不带引号
+echo '{"name": "test"}' | jq -r '.name'
+```
 
-使用该选项后，如果过滤器的结果是字符串，它将直接写入标准输出，而不是格式化为带引号的 JSON 字符串。这对 jq 过滤器与非基于 JSON 的系统对话非常有用。
+## 参考文档
+- jq 手册：<https://jqlang.github.io/jq/manual/>
