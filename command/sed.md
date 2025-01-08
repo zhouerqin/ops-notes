@@ -1,28 +1,31 @@
-# sed
+# sed 命令
 
-> 用脚本方式编辑文本。
-> 更多信息： <https://www.gnu.org/software/sed/manual/sed.html>。
+## 文本替换
+```bash
+# 将所有输入行中出现的 apple（基本 regex）替换为 mango
+{{command}} | sed 's/apple/mango/g'
 
-- 将所有输入行中出现的 `apple`（基本 regex）替换为 `mango`（基本 regex），并将结果打印到 `stdout`：
+# 使用扩展正则表达式替换并转换大小写
+{{command}} | sed -E 's/(apple)/\U\1/g'
+```
 
-`{{command}} | sed 's/apple/mango/g'`
+## 文件编辑
+```bash
+# 替换特定文件中的文本并覆盖原文件
+sed -i 's/apple/mango/g' {{path/to/file}}
 
-- 执行特定的脚本 [f]，并将结果打印到 `stdout`：
+# 在匹配行后插入另一个文件内容
+sed -i '/apple/r other.txt' file.txt
+```
 
-`{{command}} | sed -f {{path/to/script.sed}}`
+## 特殊操作
+```bash
+# 执行特定的 sed 脚本文件
+{{command}} | sed -f {{path/to/script.sed}}
 
-- 将所有输入行中出现的 "apple"（扩展 regex）替换为 "APPLE"（扩展 regex），并将结果打印到 `stdout`：
+# 只打印第一行
+{{command}} | sed -n '1p'
+```
 
-`{{command}} | sed -E 's/(apple)/\U\1/g'`
-
-- 只打印第一行到 `stdout`：
-
-`{{command}} | sed -n '1p'`
-
-- 用 "mango"（基本 regex）替换特定文件中出现的所有 "apple"（基本 regex），并覆盖原文件：
-
-`sed -i 's/apple/mango/g' {{path/to/file}}`
-
-- 在匹配行后插入另一个文件
-
-`sed -i '/apple/r other.txt' file.txt`
+## 参考文档
+- GNU sed 手册：<https://www.gnu.org/software/sed/manual/sed.html>
