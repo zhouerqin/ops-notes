@@ -79,7 +79,10 @@ vgextend centos /dev/vdb2
 
 # 4. 扩展 LV
 lvextend -l +100%FREE /dev/centos/home
+# ext2/ext3/ext4文件系统,刷新大小
 resize2fs /dev/centos/home
+# xfs文件系统,刷新大小
+xfs_growfs /dev/centos/home
 ```
 
 ## 缩容示例
