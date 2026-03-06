@@ -14,13 +14,13 @@ subgraph 物理卷 PV
     /dev/sdd1-->|create| PV3
 end
 subgraph 卷组 VG
-    PV1-->|create| VG1[centos]
+    PV1-->|create| VG1(centos)
     PV2-->|extend| VG1
     PV3-->|extend| VG1
 end
 subgraph 逻辑卷 LV
-    VG1-->|create| LV1[/root]
-    VG1-->|create| LV2[/home]
+    VG1-->|create| LV1(root)
+    VG1-->|create| LV2(home)
 end
 ```
 
