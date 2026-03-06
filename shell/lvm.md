@@ -9,18 +9,18 @@ subgraph 物理设备
     /dev/sdd1
 end
 subgraph 物理卷 PV
-    /dev/sdb1-->|pvcreate| PV1
-    /dev/sdc1-->|pvcreate| PV2
-    /dev/sdd1-->|pvcreate| PV3
+    /dev/sdb1-->|create| PV1
+    /dev/sdc1-->|create| PV2
+    /dev/sdd1-->|create| PV3
 end
 subgraph 卷组 VG
-    PV1-->|vgcreate| VG1[centos]
-    PV2-->|vgextend| VG1
-    PV3-->|vgextend| VG1
+    PV1-->|create| VG1[centos]
+    PV2-->|extend| VG1
+    PV3-->|extend| VG1
 end
 subgraph 逻辑卷 LV
-    VG1-->|lvcreate| LV1[/dev/centos/root]
-    VG1-->|lvcreate| LV2[/dev/centos/home]
+    VG1-->|create| LV1[/root]
+    VG1-->|create| LV2[/home]
 end
 ```
 
