@@ -34,7 +34,7 @@ fi
 echo -e "\n===== CPU使用情况 ======"
 echo "逻辑核数量: $(nproc)"
 # 使用top命令获取CPU使用率
-top -bn1 | grep "%Cpu" | awk '{print "用户空间: " $2 "%", "系统空间: " $4 "%", "空闲: " $8 "%"}'
+top -bn1 | grep "%Cpu" | awk '{idle=$8; usage=100-idle; printf "CPU使用率: %.1f%% (用户: %s, 系统: %s, 空闲: %s%%)\n", usage, $2, $4, $8}'
 echo ""
 
 echo -e "\n===== 内存使用情况 ======"
