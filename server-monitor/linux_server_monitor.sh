@@ -35,18 +35,15 @@ echo -e "\n===== CPU使用情况 ======"
 echo "逻辑核数量: $(nproc)"
 # 使用top命令获取CPU使用率
 top -bn1 | grep "%Cpu" | awk '{idle=$8; usage=100-idle; printf "CPU使用率: %.1f%% (用户: %s, 系统: %s, 空闲: %s%%)\n", usage, $2, $4, $8}'
-echo ""
 
 echo -e "\n===== 内存使用情况 ======"
 # 显示总内存、已用内存、空闲内存、可用内存和使用率
 free -b | awk 'NR==2 {total=$2; used=$3; free=$4; avail=$7; usage=used/total*100; printf "总内存: %.2fGi, 已用: %.2fGi, 空闲: %.2fGi, 可用: %.2fGi, 使用率: %.1f%%\n", total/1024/1024/1024, used/1024/1024/1024, free/1024/1024/1024, avail/1024/1024/1024, usage}'
 
 # 解释: 在Linux中，"空闲"是完全未使用的内存，"可用"包含空闲内存和可释放的缓存/缓冲区
-echo ""
 
 echo -e "\n===== 硬盘使用情况 ======"
 df -x devtmpfs -x tmpfs -x overlay -h | awk '$NF=="/" {print "/: " $2 " 总容量, " $3 " 已用, " $4 " 可用, " $5 " 使用率"}'
 df -x devtmpfs -x tmpfs -x overlay -h | grep -v '^Filesystem' | grep -v '/$' | grep -v '/boot' | awk '{print $6 ": " $2 " 总容量, " $3 " 已用, " $4 " 可用, " $5 " 使用率"}'
-echo ""
 
 echo -e "\n===== 统计结束 ======"
