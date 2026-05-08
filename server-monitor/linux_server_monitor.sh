@@ -7,10 +7,10 @@ echo "=== 服务器资源使用情况统计 ==="
 echo "日期时间: $(date '+%Y-%m-%d %H:%M:%S')"
 
 # 服务器信息
- echo -e "\n=== 信息 ==="
+echo -e "\n=== 信息 ==="
 echo "主机名: $(hostname)"
- # 操作系统信息
- echo "操作系统: $(grep '^NAME=' /etc/os-release | cut -d '=' -f2 | tr -d '"') $(grep '^VERSION=' /etc/os-release | cut -d '=' -f2 | tr -d '"')"
+# 操作系统信息
+echo "操作系统: $(grep '^NAME=' /etc/os-release | cut -d '=' -f2 | tr -d '"') $(grep '^VERSION=' /etc/os-release | cut -d '=' -f2 | tr -d '"')"
 
 # 内网IP (只显示第一个非回环IP)
 echo -n "内网IP: "
