@@ -43,7 +43,6 @@ free -b | awk 'NR==2 {total=$2; used=$3; free=$4; avail=$7; usage=used/total*100
 # 解释: 在Linux中，"空闲"是完全未使用的内存，"可用"包含空闲内存和可释放的缓存/缓冲区
 
 echo -e "\n=== 硬盘使用情况 ==="
-df -x devtmpfs -x tmpfs -x overlay -h | awk '$NF=="/" {print "/: " $2 " 总容量, " $3 " 已用, " $4 " 可用, " $5 " 使用率"}'
-df -x devtmpfs -x tmpfs -x overlay -h | grep -v '^Filesystem' | grep -v '/$' | grep -v '/boot' | awk '{print $6 ": " $2 " 总容量, " $3 " 已用, " $4 " 可用, " $5 " 使用率"}'
+df -x devtmpfs -x tmpfs -x overlay -h | awk 'NR>1 && $6!="/boot" {print $6 ": " $2 " 总容量, " $3 " 已用, " $4 " 可用, " $5 " 使用率"}'
 
 echo -e "\n=== 统计结束 ==="
