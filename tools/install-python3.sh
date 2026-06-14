@@ -48,8 +48,8 @@ function install_openssl() {
   tar -zxf openssl-${openssl_version}.tar.gz
   cd openssl-${openssl_version}
   ./config --prefix=/usr/local/ssl --openssldir=/usr/local/ssl shared zlib
-  make -s -j $(nproc)
-  make -s install
+  make --quiet -j $(nproc)
+  make install --quiet
   cd ..
   echo "/usr/local/ssl/lib64" > /etc/ld.so.conf.d/openssl3.conf
   ldconfig
@@ -75,8 +75,8 @@ function install_python() {
   export CFLAGS="-I/usr/local/ssl/include"
   export LDFLAGS="-L/usr/local/ssl/lib64 -Wl,-rpath,/usr/local/ssl/lib64"
   ./configure --quiet --prefix="/usr/local/python3" --enable-shared --enable-optimizations --with-system-ffi --with-openssl=/usr/local/ssl --with-openssl-rpath=auto
-  make -s -j $(nproc)
-  make -s install
+  make --quiet -j $(nproc)
+  make install --quiet
   cd ..
   add_profile
   add_ldconf
