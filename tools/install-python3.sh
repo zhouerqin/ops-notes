@@ -7,8 +7,6 @@
 set -euo pipefail
 
 LOG_FILE="install-python3-$(date +%Y%m%d-%H%M%S).log"
-: > "$LOG_FILE"
-exec > >(tee -a "$LOG_FILE") 2>&1
 trap 'echo "错误：第 $LINENO 行失败，完整日志见 $LOG_FILE" >&2' ERR
 
 if [[ $# == 1 ]]; then
@@ -50,9 +48,9 @@ function install_openssl() {
   fi
   tar -zxf openssl-${openssl_version}.tar.gz
   cd openssl-${openssl_version}
-  ./config --prefix=/usr/local/ssl --openssldir=/usr/local/ssl shared zlib >> "$LOG_FILE" 2>&1
-  make -j $(nproc) >> "$LOG_FILE" 2>&1
-  make install >> "$LOG_FILE" 2>&1
+  ./config --prefix=/usr/local/ssl --openssldir=/usr/local/ssl shared zlib
+  make -j $(nproc)
+  make install
   cd ..
   echo "/usr/local/ssl/lib64" > /etc/ld.so.conf.d/openssl3.conf
   ldconfig
@@ -77,9 +75,9 @@ function install_python() {
   cd Python-$version/
   export CFLAGS="-I/usr/local/ssl/include"
   export LDFLAGS="-L/usr/local/ssl/lib64 -Wl,-rpath,/usr/local/ssl/lib64"
-  ./configure --prefix="/usr/local/python3" --enable-shared --enable-optimizations --with-system-ffi --with-openssl=/usr/local/ssl --with-openssl-rpath=auto >> "$LOG_FILE" 2>&1
-  make -j $(nproc) >> "$LOG_FILE" 2>&1
-  make install >> "$LOG_FILE" 2>&1
+  ./configure --prefix="/usr/local/python3" --enable-shared --enable-optimizations --with-system-ffi --with-openssl=/usr/local/ssl --with-openssl-rpath=auto
+  make -j $(nproc)
+  make install
   cd ..
   add_profile
   add_ldconf
@@ -103,14 +101,14 @@ function fix_scl_repo() {
 }
 
 echo "==> 安装开发工具包（yum groupinstall，约 2-5 分钟）..."
-yum -y -q groupinstall "Development tools" >> "$LOG_FILE" 2>&1
-yum install -y -q centos-release-scl >> "$LOG_FILE" 2>&1
+yum -y -q groupinstall "Development tools"
+yum install -y -q centos-release-scl
 fix_scl_repo
 echo "==> 安装 devtoolset-11 GCC 11+（约 2-5 分钟）..."
-yum install -y -q devtoolset-11-gcc devtoolset-11-gcc-c++ >> "$LOG_FILE" 2>&1
-yum install -y -q ncurses-devel gdbm-devel xz-devel sqlite-devel tk-devel uuid-devel readline-devel bzip2-devel libffi-devel zlib-devel perl perl-IPC-Cmd perl-Time-Piece >> "$LOG_FILE" 2>&1
+yum install -y -q devtoolset-11-gcc devtoolset-11-gcc-c++
+yum install -y -q ncurses-devel gdbm-devel xz-devel sqlite-devel tk-devel uuid-devel readline-devel bzip2-devel libffi-devel zlib-devel perl perl-IPC-Cmd perl-Time-Piece
 
-source /opt/rh/devtoolset-11/enable >> "$LOG_FILE" 2>&1
+source /opt/rh/devtoolset-11/enable
 install_openssl
 install_python
 
