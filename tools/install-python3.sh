@@ -6,7 +6,7 @@
 
 set -euo pipefail
 
-trap 'echo "错误：第 $LINENO 行失败，运行方式如右：./install-python3.sh 2>&1 | tee install.log" >&2' ERR
+trap 'echo "错误：第 $LINENO 行执行失败，退出码 $?" >&2' ERR
 
 if [[ $# == 1 ]]; then
   version=$1
@@ -48,8 +48,8 @@ function install_openssl() {
   tar -zxf openssl-${openssl_version}.tar.gz
   cd openssl-${openssl_version}
   ./config --prefix=/usr/local/ssl --openssldir=/usr/local/ssl shared zlib
-  make -j $(nproc)
-  make install
+  make -s -j $(nproc)
+  make -s install
   cd ..
   echo "/usr/local/ssl/lib64" > /etc/ld.so.conf.d/openssl3.conf
   ldconfig
@@ -74,9 +74,9 @@ function install_python() {
   cd Python-$version/
   export CFLAGS="-I/usr/local/ssl/include"
   export LDFLAGS="-L/usr/local/ssl/lib64 -Wl,-rpath,/usr/local/ssl/lib64"
-  ./configure --prefix="/usr/local/python3" --enable-shared --enable-optimizations --with-system-ffi --with-openssl=/usr/local/ssl --with-openssl-rpath=auto
-  make -j $(nproc)
-  make install
+  ./configure --quiet --prefix="/usr/local/python3" --enable-shared --enable-optimizations --with-system-ffi --with-openssl=/usr/local/ssl --with-openssl-rpath=auto
+  make -s -j $(nproc)
+  make -s install
   cd ..
   add_profile
   add_ldconf
