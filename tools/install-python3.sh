@@ -6,8 +6,7 @@
 
 set -euo pipefail
 
-LOG_FILE="install-python3-$(date +%Y%m%d-%H%M%S).log"
-trap 'echo "错误：第 $LINENO 行失败，完整日志见 $LOG_FILE" >&2' ERR
+trap 'echo "错误：第 $LINENO 行失败，运行方式如右：./install-python3.sh 2>&1 | tee install.log" >&2' ERR
 
 if [[ $# == 1 ]]; then
   version=$1
