@@ -1,10 +1,14 @@
 #!/bin/bash
+#
+# 在 CentOS 7 上从源码编译安装 Python 3.14
+# 依赖：gcc 11+（devtoolset-11）、OpenSSL 3.5 LTS
+#
 
 set -e
 if [[ $# == 1 ]]; then
   version=$1
 else
-  version=3.11.12
+  version=3.14.6
 fi
 function add_profile() {
   cat >/etc/profile.d/python3.sh <<EOF
@@ -20,7 +24,7 @@ EOF
   ldconfig
 }
 function set_pip() {
-  mkdir ~/.pip
+  mkdir -p ~/.pip
   cat >~/.pip/pip.conf <<EOF
 [global]
 index-url = http://mirrors.aliyun.com/pypi/simple/
@@ -29,19 +33,73 @@ index-url = http://mirrors.aliyun.com/pypi/simple/
 trusted-host=mirrors.aliyun.com
 EOF
 }
-yum -y groupinstall "Development tools"
-yum install -y ncurses-devel gdbm-devel xz-devel sqlite-devel tk-devel uuid-devel readline-devel bzip2-devel libffi-devel
-yum install -y openssl-devel openssl11 openssl11-devel
-
-tar -zxf Python-$version.tgz
-if [[ -d ./Python-$version/ ]]; then
-  cd ./Python-$version/
-  export CFLAGS=$(pkg-config --cflags openssl11)
-  export LDFLAGS=$(pkg-config --libs openssl11)
-  ./configure --prefix="/usr/local/python3" --enable-shared --enable-optimizations
+function install_openssl() {
+  local openssl_version=3.5.7
+  if [[ -d /usr/local/ssl ]]; then
+    echo "OpenSSL already installed at /usr/local/ssl, skipping..."
+    return
+  fi
+  echo "Installing OpenSSL ${openssl_version}..."
+  if [[ ! -f openssl-${openssl_version}.tar.gz ]]; then
+    wget https://github.com/openssl/openssl/releases/download/openssl-${openssl_version}/openssl-${openssl_version}.tar.gz
+  fi
+  tar -zxf openssl-${openssl_version}.tar.gz
+  cd openssl-${openssl_version}
+  ./config --prefix=/usr/local/ssl --openssldir=/usr/local/ssl shared zlib
   make -j $(nproc)
   make install
+  cd ..
+  echo "/usr/local/ssl/lib64" > /etc/ld.so.conf.d/openssl3.conf
+  ldconfig
+  export PATH="/usr/local/ssl/bin:$PATH"
+  export PKG_CONFIG_PATH="/usr/local/ssl/lib64/pkgconfig:/usr/local/ssl/lib/pkgconfig:$PKG_CONFIG_PATH"
+}
+
+function install_python() {
+  if [[ -f /usr/local/python3/bin/python3 ]]; then
+    local installed_version
+    installed_version=$(/usr/local/python3/bin/python3 --version 2>&1 | awk '{print $2}')
+    echo "Python ${installed_version} already installed at /usr/local/python3, skipping..."
+    set_pip
+    return
+  fi
+  echo "Installing Python ${version}..."
+  if [[ ! -f Python-$version.tgz ]]; then
+    wget https://mirrors.aliyun.com/python-release/source/Python-$version.tgz
+  fi
+  tar -zxf Python-$version.tgz
+  cd Python-$version/
+  export CFLAGS="-I/usr/local/ssl/include"
+  export LDFLAGS="-L/usr/local/ssl/lib64 -Wl,-rpath,/usr/local/ssl/lib64"
+  ./configure --prefix="/usr/local/python3" --enable-shared --enable-optimizations --with-system-ffi --with-openssl=/usr/local/ssl --with-openssl-rpath=auto
+  make -j $(nproc)
+  make altinstall
+  cd ..
   add_profile
   add_ldconf
   set_pip
-fi
+}
+
+function fix_scl_repo() {
+  local repo_file
+  for repo_file in /etc/yum.repos.d/CentOS-SCLo-*.repo; do
+    [[ -f "${repo_file}" ]] || continue
+    if ! grep -q "^mirrorlist=" "${repo_file}"; then
+      echo "$(basename ${repo_file}) already fixed, skipping..."
+      continue
+    fi
+    echo "Fixing $(basename ${repo_file})..."
+    sed -i 's|^mirrorlist=|#mirrorlist=|g' "${repo_file}"
+    sed -i 's|^# *baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' "${repo_file}"
+  done
+}
+
+yum -y groupinstall "Development tools"
+yum install -y centos-release-scl
+fix_scl_repo
+yum install -y devtoolset-11-gcc devtoolset-11-gcc-c++
+yum install -y ncurses-devel gdbm-devel xz-devel sqlite-devel tk-devel uuid-devel readline-devel bzip2-devel libffi-devel zlib-devel perl perl-IPC-Cmd perl-Time-Piece
+
+source /opt/rh/devtoolset-11/enable
+install_openssl
+install_python
